@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/Statistics-ZTest.t
+lib/Statistics/ZTest.pm

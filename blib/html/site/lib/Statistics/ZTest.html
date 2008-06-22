@@ -1,0 +1,203 @@
+<?xml version="1.0" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- saved from url=(0017)http://localhost/ -->
+<script language="JavaScript" src="../../../displayToc.js"></script>
+<script language="JavaScript" src="../../../tocParas.js"></script>
+<script language="JavaScript" src="../../../tocTab.js"></script>
+<link rel="stylesheet" type="text/css" href="../../../scineplex.css">
+<title>Statistics::ZTest - Basic ztest and normal probability reporting</title>
+<link rel="stylesheet" href="../../../Active.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+
+<script>writelinks('__top__',3);</script>
+<h1><a>Statistics::ZTest - Basic ztest and normal probability reporting</a></h1>
+<p><a name="__index__"></a></p>
+
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#version">VERSION</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#methods">METHODS</a></li>
+	<ul>
+
+		<li><a href="#new">new</a></li>
+		<li><a href="#ztest">ztest</a></li>
+		<li><a href="#p_value">p_value</a></li>
+		<li><a href="#r_2_z">r_2_z</a></li>
+		<li><a href="#z_2_r">z_2_r</a></li>
+		<li><a href="#chi_2_z">chi_2_z</a></li>
+		<li><a href="#dep_intercorrelation">dep_intercorrelation</a></li>
+	</ul>
+
+	<li><a href="#options">OPTIONS</a></li>
+	<ul>
+
+		<li><a href="#observed">observed</a></li>
+		<li><a href="#expected">expected</a></li>
+		<li><a href="#variance">variance</a></li>
+		<li><a href="#ccorr">ccorr</a></li>
+		<li><a href="#s_precision">s_precision</a></li>
+		<li><a href="#p_precision">p_precision</a></li>
+		<li><a href="#tails">tails</a></li>
+	</ul>
+
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#to_do_bugs">TO DO/BUGS</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#copyright_license_disclaimer">COPYRIGHT/LICENSE/DISCLAIMER</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Statistics::ZTest - Basic ztest and normal probability reporting</p>
+<p>
+</p>
+<hr />
+<h1><a name="version">VERSION</a></h1>
+<p>This is documentation for Version 0.01 of Statistics::ZTest (2006.11.22).</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+ <span class="keyword">use</span> <span class="variable">Statistics::ZTest</span><span class="operator">;</span>
+ <span class="keyword">my</span> <span class="variable">$dev</span> <span class="operator">=</span> <span class="variable">Statistics::ZTest</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">(</span>
+    <span class="string">ccorr</span>    <span class="operator">=&gt;</span> <span class="number">1</span><span class="operator">,</span>
+    <span class="string">tails</span>    <span class="operator">=&gt;</span> <span class="number">2</span><span class="operator">,</span>
+    <span class="string">s_precision</span> <span class="operator">=&gt;</span> <span class="number">5</span><span class="operator">,</span>
+    <span class="string">p_precision</span> <span class="operator">=&gt;</span> <span class="number">5</span><span class="operator">,</span>
+ <span class="operator">);</span>
+</pre>
+<pre>
+ <span class="keyword">my</span> <span class="operator">(</span><span class="variable">$z</span><span class="operator">,</span> <span class="variable">$pz</span><span class="operator">,</span> <span class="variable">$observed_deviation</span><span class="operator">,</span> <span class="variable">$standard_deviation</span><span class="operator">)</span> <span class="operator">=</span> 
+    <span class="variable">$dev</span><span class="operator">-&gt;</span><span class="variable">ztest</span><span class="operator">(</span>
+        <span class="string">observed</span> <span class="operator">=&gt;</span> <span class="variable">$stat_obs</span><span class="operator">,</span>
+        <span class="string">expected</span> <span class="operator">=&gt;</span> <span class="variable">$stat_exp</span><span class="operator">,</span>
+        <span class="string">variance</span> <span class="operator">=&gt;</span> <span class="variable">$variance</span><span class="operator">,</span>
+ <span class="operator">);</span>
+</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Calculates a z-statistic: the ratio of an observed deviation to a standard deviation. Purpose is simply to support <a href="../../../site/lib/Statistics/Sequences.html">Statistics::Sequences</a>, but with some standalone utilities.</p>
+<p>
+</p>
+<hr />
+<h1><a name="methods">METHODS</a></h1>
+<p>
+</p>
+<h2><a name="new">new</a></h2>
+<pre>
+ <span class="variable">$dev</span> <span class="operator">=</span> <span class="variable">Statistics::ZTest</span><span class="operator">-&gt;</span><span class="variable">new</span><span class="operator">();</span>
+</pre>
+<p>Returns a Statistics::ZTest object. Accepts setting of any of the <em>OPTIONS</em>.</p>
+<p>
+</p>
+<h2><a name="ztest">ztest</a></h2>
+<p>You supply the observed and expected values of your statistic, and the variance (observed or expected).</p>
+<p>Additionally, you may specify a boolean for performing the continuity-correction to the observed deviation, and then a value of either 1 or 2 to specify the tails relevant to determining the probability of obtaining the calculated z.</p>
+<p>Returns an array consisting of the z-statistic, its probability, the observed deviation (the difference between the observed and expected values of your statistic), and the standard deviation (the square-root of the variance supplied).</p>
+<p>All return a z_value, or a z_value and p_value, where relevant, and called in array context.</p>
+<p>
+</p>
+<h2><a name="p_value">p_value</a></h2>
+<pre>
+ $p = $dev-&gt;p_value($z)</pre>
+<p>Send a z-value, get its associated p-value, 2-tailed by default.</p>
+<p>
+</p>
+<h2><a name="r_2_z">r_2_z</a></h2>
+<pre>
+ $z = $dev-&gt;r_2_z($r)</pre>
+<p>Performs the Fisher r-to-z transformation. Send a correlation coefficient - get back a z-value.</p>
+<p>
+</p>
+<h2><a name="z_2_r">z_2_r</a></h2>
+<pre>
+ $r = $dev-&gt;z_2_r($z)</pre>
+<p>Send a z-value - get back a correlation coefficient.</p>
+<p>
+</p>
+<h2><a name="chi_2_z">chi_2_z</a></h2>
+<pre>
+ $z = $dev-&gt;chi_2_z($chi)</pre>
+<p>Send a chi-value, get back a z-value (the square-root of the thing ...).</p>
+<p>
+</p>
+<h2><a name="dep_intercorrelation">dep_intercorrelation</a></h2>
+<pre>
+ ($z, $p) = $dev-&gt;dep_intercorrelation($r_xz, $r_yz, $r_xy, $n)</pre>
+<p>For comparing dependent correlations with a common variable. You have the r-values for the correlation between (1) Variable X and Variable Z, and Variable Y and Variable Z, and want to test, for example, if Z correlates more highly with X than with Y. These two correlations form the first two arguments (after the class object). You also need to calculate the correlation of X and Y themselves, and send it as the third argument. Lastly, also send the sample size. Uses the Meng-Rosenthal-Rubin method.</p>
+<p>
+</p>
+<hr />
+<h1><a name="options">OPTIONS</a></h1>
+<p>The following can be set in the call to <a href="#new">the new manpage</a> or <em>test</em>.</p>
+<p>
+</p>
+<h2><a name="observed">observed</a></h2>
+<p>The observed value of the test statistic.</p>
+<p>
+</p>
+<h2><a name="expected">expected</a></h2>
+<p>The expected value of the test statistic.</p>
+<p>
+</p>
+<h2><a name="variance">variance</a></h2>
+<p>The variance of the test statistic (whether expected or observed).</p>
+<p>
+</p>
+<h2><a name="ccorr">ccorr</a></h2>
+<p>Apply the continuity correction. Default = 0.</p>
+<p>
+</p>
+<h2><a name="s_precision">s_precision</a></h2>
+<p>Precision of the z_value. Default = 2.</p>
+<p>
+</p>
+<h2><a name="p_precision">p_precision</a></h2>
+<p>Precision of the associated p_value. Default = 0.</p>
+<p>
+</p>
+<h2><a name="tails">tails</a></h2>
+<p>Tails from which to assess the association p_value (1 or 2). Default = 2.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p><a href="../../../site/lib/Math/SymbolicX/Statistics/Distributions.html">Statistics::Distributions</a> : the <code>uprob</code> and <code>precision_string</code> methods are here used for calculating and reporting probability.</p>
+<p>
+</p>
+<hr />
+<h1><a name="to_do_bugs">TO DO/BUGS</a></h1>
+<p>Other distributions.</p>
+<p>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Roderick Garton, &lt;rgarton@utas_DOT_edu_DOT_au&gt;</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright_license_disclaimer">COPYRIGHT/LICENSE/DISCLAIMER</a></h1>
+<p>Copyright (C) 2007 Roderick Garton</p>
+<p>This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself, either Perl version 5.8.8 or, at your option, any later version of Perl 5 you may have available.</p>
+<p>To the maximum extent permitted by applicable law, the author of this module disclaims all warranties, either express or implied, including but not limited to implied warranties of merchantability and fitness for a particular purpose, with regard to the software and the accompanying documentation.</p>
+
+</body>
+
+</html>
